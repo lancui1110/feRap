@@ -43,7 +43,7 @@
       </el-col>
       <el-col :span="24">
         <editor-frame
-            :listActive="form"
+            :list-active="form"
             :output-model.sync="form.output"
             :output-json.sync="form.outputJson"
             :input-json.sync="form.input"
@@ -80,7 +80,7 @@
     name: 'apiForm',
     data () {
       return {
-        isAdd: true,
+        isAdd: false,
         editorError: {},
         form: {
           method: 'GET',
@@ -113,10 +113,10 @@
     },
     methods: {
       getData () {
-        console.log(`form getData....`)
         if (!this.apiId) return
         api.getApiDetail(this.apiId, (data) => {
           this.form = data
+          this.isAdd = true
         })
       }
     }

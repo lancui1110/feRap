@@ -50,7 +50,7 @@
 
 <script type='text/babel'>
 import tableItem from './table-item.vue'
-import util from '@/common/util.js'
+import util from '@global/utils.js'
 require('./codemirror_alias.js')
 import mock from 'mockjs'
 // import { listActive } from '../vuex/getters.js'
@@ -65,7 +65,7 @@ export default {
     tableItem
   },
   props: {
-    list_active: {
+    listActive: {
       type: Object,
       default () {
         return {}
@@ -125,7 +125,7 @@ export default {
   },
   data () {
     return {
-      // list_active: {},
+      list_active: {},
 
       /*
       输入数据模型
@@ -156,8 +156,9 @@ export default {
     }
   },
   watch: {
-    inputJson (val) {
-      console.log(`inputJson` + JSON.stringify(val))
+    listActive (val) {
+      // console.log(`listActive1` + JSON.stringify(val))
+      this.list_active = val
     },
     inputModel (val) {
       console.log(`inputModel` + JSON.stringify(val))
@@ -166,7 +167,7 @@ export default {
       console.log(`outputData update....`)
       const self = this
       if (val && self.isJson(val)) {
-        console.log('yes, is json')
+        console.log('output yes, is json')
         // self.outputJson = JSON.parse(val.replace(/[\s\r\n]/, ''))
         // self.outputModel = self.revertFormat(self.outputJson, [], 'output')
         self.$emit('update:outputJson', JSON.parse(val.replace(/[\s\r\n]/, '')))
@@ -183,7 +184,7 @@ export default {
     inputData (val) {
       const self = this
       if (val && self.isJson(val)) {
-        console.log('yes, is json')
+        console.log('input yes, is json')
         // self.inputJson = JSON.parse(val.replace(/[\s\r\n]/, ''))
         // self.inputModel = self.revertFormat(self.inputJson, [], 'input')
         const inputJsonVal = JSON.parse(val.replace(/[\s\r\n]/, ''))
@@ -226,11 +227,13 @@ export default {
     }
   },
   mounted () {
-    this.$on('init-code-mirror-all', this.initCodeMirrorAll)
-    this.$on('remove-code-mirror-all', this.removeCodeMirrorAll)
-    this.$on('revertMock', this.revertMock)
-
-    this.initCodeMirrorAll()
+    this.$nextTick(function () {
+      console.log(`mounted11........`)
+      this.$on('init-code-mirror-all', this.initCodeMirrorAll)
+      this.$on('remove-code-mirror-all', this.removeCodeMirrorAll)
+      this.$on('revertMock', this.revertMock)
+      this.initCodeMirrorAll()
+    })
   },
   // 清除事件监听
   beforeDestroy: function () {
@@ -473,6 +476,7 @@ export default {
       console.log(`initCodeMirrorAll....`)
       const self = this
       if (self.editorReady) {
+        console.log(`self.editorReady1====${self.editorReady}`)
         self.setEditorData('input', self.inputJson)
         self.setEditorData('output', self.outputJson)
         self.$emit('revertMock')
@@ -523,7 +527,7 @@ export default {
       self.$emit('revertMock')
     },
     removeCodeMirrorAll () {
-      self.editorReady = false
+      this.editorReady = false
     }
   }
 }
